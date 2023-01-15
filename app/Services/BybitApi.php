@@ -58,5 +58,14 @@ class BybitApi
         return collect($data['result']['list'] ?? []);
     }
 
+    // get all symbols
+    function get_symbols(): Collection
+    {
+        $endpoint = '/spot/v3/public/symbols';
+        $data = $this->get($endpoint);
+     
+        return collect($data['result']['list'] ?? []);
+    }
+
 
 }

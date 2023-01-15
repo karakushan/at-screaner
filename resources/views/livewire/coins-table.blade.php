@@ -17,13 +17,13 @@
                             </th>
                         </tr>
                         </thead>
-                        <tbody wire:poll.3s>
-                        @foreach ($prices_all as $name=>$coin)
+                        <tbody wire:poll.5s>
+                        @foreach ($symbols as $name=>$symbol)
                             <tr class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $name }} </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $symbol->name }} </td>
                                 <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                                     <ul>
-                                        @foreach ($coin['prices'] as $exchange=>$price)
+                                        @foreach ($symbol->prices as $price)
                                                 <?php
                                                 $links = [
                                                     'binance' => 'https://www.binance.com/en/trade/%s_%s?theme=dark&type=spot',
@@ -32,8 +32,8 @@
                                                 ?>
                                             <li class="flex">
                                                     <span
-                                                        class="text-sm font-medium text-gray-900">{{ $exchange }} - {{ $price }}</span>
-                                                <a href="{{ sprintf($links[$exchange], $coin['info']['baseAsset'], $coin['info']['quoteAsset']) }}"
+                                                        class="text-sm font-medium text-gray-900">{{ $price->exchange_name }} - {{ $price->price }}</span>
+                                                <a href="{{ sprintf($links[$price->exchange->slug], $symbol->base_currency, $symbol->quote_currency) }}"
                                                    target="_blank" class="w-4 flex ml-2">
                                                     <svg fill="none" stroke="currentColor" stroke-width="1.5"
                                                          viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
@@ -48,7 +48,7 @@
                                     </ul>
                                 </td>
                                 <td>
-                                    <span class="text-sm font-medium text-gray-900">{{ $coin['diff'] }}%</span>
+                                    <span class="text-sm font-medium text-gray-900">{{ $symbol->spread }}%</span>
                                 </td>
                             </tr>
                         @endforeach
