@@ -5,6 +5,8 @@ namespace App\Console;
 use App\Models\Exchange;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
@@ -18,15 +20,19 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('exchange:update_symbols binance')->everyFourHours();
         $schedule->command('exchange:update_symbols bybit')->everyFourHours();
-    }
 
-    protected function shortSchedule(\Spatie\ShortSchedule\ShortSchedule $shortSchedule)
-    {
-        // this artisan command will run every second
-        $exchanges = Exchange::all();
-        foreach ($exchanges as $exchange) {
-            $shortSchedule->command('exchange:update_prices ' . $exchange->slug)->everySeconds();
-        }
+        $seconds = 5;
+        $schedule->call(function () use ($seconds) {
+            $dt = Carbon::now();
+            $x = 60 / $seconds;
+            $exchanges = Exchange::all();
+            do {
+                foreach ($exchanges as $exchange) {
+                    \Artisan::call('exchange:update_prices '.$exchange->slug);
+                }
+                time_sleep_until($dt->addSeconds($seconds)->timestamp);
+            } while ($x-- > 1);
+        })->everyMinute();
     }
 
     /**
