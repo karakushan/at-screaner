@@ -50,6 +50,9 @@
                                 {{ __('Name') }}
                             </th>
                             <th scope="col" class="px-6 py-3">
+                                {{ __('Slug') }}
+                            </th>
+                            <th scope="col" class="px-6 py-3">
                                 {{ __('Active') }}
                             </th>
                             <th scope="col" class="px-6 py-3">
@@ -75,6 +78,12 @@
                                 </th>
                                 <td class="px-6 py-4">
                                     {{ $exchange->name }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    {{ $exchange->slug  }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    yes
                                 </td>
                                 <td class="px-6 py-4">
 

@@ -38,7 +38,7 @@ class UpdatePrices extends Command
             $exchanges = Exchange::all();
             foreach ($exchanges as $exchange) {
                 if (!method_exists($this, $exchange->slug)) {
-                    $this->error('Exchange "'.$exchange->slug.'" not found');
+                    $this->error('Exchange "' . $exchange->slug . '" not found');
                     continue;
                 }
                 $this->{$exchange->slug}();
@@ -92,6 +92,7 @@ class UpdatePrices extends Command
 
     private function bybit()
     {
+
         $api = new \App\Services\BybitApi();
         $exchange = Exchange::where('slug', 'bybit')->firstOrFail();
         $prices = $api->get_prices();
@@ -112,5 +113,39 @@ class UpdatePrices extends Command
             }
 
         });
+
+    }
+
+    private function whitebit()
+    {
+        $start = microtime(true);
+
+        $api = new \App\Services\WhitebitApi();
+        $exchange = Exchange::where('slug', 'whitebit')->firstOrFail();
+        $prices = $api->get_prices();
+
+        $prices->each(function ($price, $key) use ($exchange) {
+            $symbol = Symbol::where('name', str_replace('_', '', $key))->first();
+
+            if ($symbol) {
+                // update or create price
+                SymbolPrice::updateOrCreate([
+                    'symbol_id' => $symbol->id,
+                    'exchange_id' => $exchange->id,
+                ], [
+                    'symbol_id' => $symbol->id,
+                    'exchange_id' => $exchange->id,
+                    'price' => floatval($price['last_price']),
+                ]);
+            }
+
+        });
+
+        // end timer
+        $end = microtime(true);
+        $time = $end - $start;
+
+        // info time in seconds
+        $this->info('Time: ' . $time . ' seconds');
     }
 }

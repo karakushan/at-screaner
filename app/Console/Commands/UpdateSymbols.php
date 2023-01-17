@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Symbol;
 use App\Services\BinanceApi;
 use App\Services\BybitApi;
+use App\Services\WhitebitApi;
 use Illuminate\Console\Command;
 use \App\Models\Exchange;
 
@@ -90,6 +91,34 @@ class UpdateSymbols extends Command
                 'name' => $symbol['name'],
                 'base_currency' => $symbol['baseCoin'],
                 'quote_currency' => $symbol['quoteCoin'],
+            ]);
+
+            $attach[] = $sym->id;
+        });
+
+        $exchange->symbols()->sync($attach);
+    }
+
+    private function whitebit()
+    {
+        $api = new WhitebitApi();
+        $symbols = $api->get_symbols();
+        $exchange = Exchange::where('slug', 'whitebit')->firstOrFail();
+
+        $symbols = $symbols->filter(function ($value, $key) {
+            return $value['type'] == 'spot' && $value['tradesEnabled'] == true;
+        });
+
+        $attach = [];
+        $symbols->each(function ($symbol) use (&$attach) {
+            $sym = Symbol::updateOrCreate([
+                'name' => $symbol['stock'] . $symbol['money'],
+                'base_currency' => $symbol['stock'],
+                'quote_currency' => $symbol['money'],
+            ], [
+                'name' => $symbol['stock'] . $symbol['money'],
+                'base_currency' => $symbol['stock'],
+                'quote_currency' => $symbol['money'],
             ]);
 
             $attach[] = $sym->id;

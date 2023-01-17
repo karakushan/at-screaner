@@ -28,6 +28,7 @@
                                                 $links = [
                                                     'binance' => 'https://www.binance.com/en/trade/%s_%s?theme=dark&type=spot',
                                                     'bybit' => 'https://www.bybit.com/uk-UA/trade/spot/%s/%s',
+                                                    'whitebit' => 'https://whitebit.com/ua/trade/%s-%s?tab=positions&type=spot',
                                                 ];
                                                 ?>
                                             <li class="flex">

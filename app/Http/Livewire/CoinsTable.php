@@ -28,11 +28,9 @@ class CoinsTable extends Component
     {
         $this->symbols = Symbol::with('exchanges')
             ->with('prices')
-            ->whereHas('exchanges', function ($query) {
-                $query->where('slug', 'binance');
-            })->whereHas('exchanges', function ($query) {
-                $query->where('slug', 'bybit');
-            })->get()->sortByDesc('spread');
+            ->get()
+            ->where('spread', '>', 0)
+            ->sortByDesc('spread');
 
         return view('livewire.coins-table');
     }
