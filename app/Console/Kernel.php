@@ -28,7 +28,7 @@ class Kernel extends ConsoleKernel
             $exchanges = Exchange::all();
             do {
                 foreach ($exchanges as $exchange) {
-                    \Artisan::call('exchange:update_prices '.$exchange->slug);
+                    \Artisan::call('exchange:update_prices all');
                 }
                 time_sleep_until($dt->addSeconds($seconds)->timestamp);
             } while ($x-- > 1);

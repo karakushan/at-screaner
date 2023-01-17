@@ -30,19 +30,42 @@ class UpdatePrices extends Command
      */
     public function handle()
     {
+        $start = microtime(true);
         $exchange = $this->argument('exchange');
 
-        if (method_exists($this, $exchange)) {
-            $this->$exchange();
+        // update all exchanges
+        if ($exchange === 'all') {
+            $exchanges = Exchange::all();
+            foreach ($exchanges as $exchange) {
+                if (!method_exists($this, $exchange->slug)) {
+                    $this->error('Exchange "'.$exchange->slug.'" not found');
+                    continue;
+                }
+                $this->{$exchange->slug}();
+            }
         } else {
-            $this->error('Exchange not found');
+            if (method_exists($this, $exchange)) {
+                $this->$exchange();
+            } else {
+                $this->error('Exchange not found');
+            }
         }
+
+        // end timer
+        $end = microtime(true);
+        $time = $end - $start;
+
+        // info time in seconds
+        $this->info('Time: ' . $time . ' seconds');
+
 
         return Command::SUCCESS;
     }
 
     private function binance()
     {
+        // set timer
+        $start = microtime(true);
         $api = new \App\Services\BinanceApi();
         $exchange = Exchange::where('slug', 'binance')->firstOrFail();
         $prices = $api->get_prices();
@@ -59,11 +82,12 @@ class UpdatePrices extends Command
                 ], [
                     'symbol_id' => $symbol->id,
                     'exchange_id' => $exchange->id,
-                    'price' =>floatval($price['price']),
+                    'price' => floatval($price['price']),
                 ]);
             }
 
         });
+
     }
 
     private function bybit()
@@ -83,7 +107,7 @@ class UpdatePrices extends Command
                 ], [
                     'symbol_id' => $symbol->id,
                     'exchange_id' => $exchange->id,
-                    'price' =>floatval($price['price']),
+                    'price' => floatval($price['price']),
                 ]);
             }
 
