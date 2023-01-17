@@ -21,6 +21,7 @@ class SymbolPrice extends Model
 
     protected $appends = [
         'exchange_name',
+        'price_formatted',
     ];
 
     // exchange
@@ -33,5 +34,11 @@ class SymbolPrice extends Model
     public function getExchangeNameAttribute(): string
     {
         return $this->exchange->name ?? '';
+    }
+
+    // attribute price formatted
+    public function getPriceFormattedAttribute(): string
+    {
+        return sprintf("%.8f", $this->price);
     }
 }

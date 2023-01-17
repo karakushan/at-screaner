@@ -34,10 +34,22 @@ class UpdateSymbols extends Command
     {
         $exchange = $this->argument('exchange');
 
-        if (method_exists($this, $exchange)) {
-            $this->$exchange();
+        // update all exchanges
+        if ($exchange === 'all') {
+            $exchanges = Exchange::all();
+            foreach ($exchanges as $exchange) {
+                if (!method_exists($this, $exchange->slug)) {
+                    $this->error('Exchange "' . $exchange->slug . '" not found');
+                    continue;
+                }
+                $this->{$exchange->slug}();
+            }
         } else {
-            $this->error('Exchange not found');
+            if (method_exists($this, $exchange)) {
+                $this->$exchange();
+            } else {
+                $this->error('Exchange not found');
+            }
         }
 
         return Command::SUCCESS;

@@ -13,6 +13,9 @@ use function Psy\debug;
 class CoinsTable extends Component
 {
     public $symbols = [];
+    public $quote_assets = [];
+    public $quote_asset = '';
+    public int $capital = 1000;
 
     function __construct()
     {
@@ -22,13 +25,20 @@ class CoinsTable extends Component
     // mount
     public function mount()
     {
+        $this->symbols = Symbol::with('prices')->get();
+        $this->quote_assets = $this->symbols->pluck('quote_currency')->unique()->toArray();
     }
 
     public function render()
     {
         $this->symbols = Symbol::with('exchanges')
             ->with('prices')
+            ->when($this->quote_asset, function ($query) {
+                $query->where('quote_currency', $this->quote_asset);
+            })
+            ->withCount('prices')
             ->get()
+            ->where('prices_count', '>', 1)
             ->where('spread', '>', 0)
             ->sortByDesc('spread');
 
