@@ -16,6 +16,8 @@ class CoinsTable extends Component
     public $quote_assets = [];
     public $quote_asset = '';
     public int $capital = 1000;
+    public int $min_spread = 1;
+    public int $max_spread = 20;
 
     function __construct()
     {
@@ -39,7 +41,8 @@ class CoinsTable extends Component
             ->withCount('prices')
             ->get()
             ->where('prices_count', '>', 1)
-            ->where('spread', '>', 0)
+            ->where('spread', '>', $this->min_spread)
+            ->where('spread', '<', $this->max_spread)
             ->sortByDesc('spread');
 
         return view('livewire.coins-table');

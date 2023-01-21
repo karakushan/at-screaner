@@ -3,7 +3,15 @@
     <div class="flex flex-col">
         <div class="overflow-x-auto sm:mx-0.5 lg:mx-0.5">
             <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
-                <form action="" class="grid grid-cols-4 gap-2">
+                <form action="" class="grid grid-cols-8 gap-2">
+                    <div class="mb-6">
+                        <label for="min_spread" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('Минимальный спред %') }}</label>
+                        <input type="number" wire:model="min_spread" id="min_spread" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                    </div>
+                    <div class="mb-6">
+                        <label for="max_spread" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('Максимальный спред %') }}</label>
+                        <input type="number" wire:model="max_spread" id="min_spread" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                    </div>
                     <div class="mb-6">
                         <label for="quote_asset"
                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('Quote Asset') }}</label>
