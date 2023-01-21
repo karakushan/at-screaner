@@ -42,7 +42,7 @@ class BinanceApi
                 return $data['symbols'] ?? [];
             }
 
-            return [];
+            return []; 
         });
 
         return collect($symbols ?? []);

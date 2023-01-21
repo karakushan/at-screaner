@@ -79,7 +79,9 @@ class UpdateSymbols extends Command
             $attach[] = $sym->id;
         });
 
+        // atach symbols
         $exchange->symbols()->sync($attach);
+
     }
 
     private function bybit()

@@ -30,7 +30,6 @@ class UpdatePrices extends Command
      */
     public function handle()
     {
-        $start = microtime(true);
         $exchange = $this->argument('exchange');
 
         // update all exchanges
@@ -41,40 +40,36 @@ class UpdatePrices extends Command
                     $this->error('Exchange "' . $exchange->slug . '" not found');
                     continue;
                 }
+                $start = microtime(true);
                 $this->{$exchange->slug}();
+                $end = microtime(true);
+                $this->info(sprintf('%s - time: %s sec.', $exchange->slug, round($end - $start)));
             }
         } else {
             if (method_exists($this, $exchange)) {
+                $start = microtime(true);
                 $this->$exchange();
+                $end = microtime(true);
+                $this->info(sprintf('%s - time: %s sec.', $exchange, round($end - $start)));
             } else {
                 $this->error('Exchange not found');
             }
         }
-
-        // end timer
-        $end = microtime(true);
-        $time = $end - $start;
-
-        // info time in seconds
-        $this->info('Time: ' . $time . ' seconds');
-
 
         return Command::SUCCESS;
     }
 
     private function binance()
     {
-        // set timer
-        $start = microtime(true);
         $api = new \App\Services\BinanceApi();
         $exchange = Exchange::where('slug', 'binance')->firstOrFail();
         $prices = $api->get_prices();
 
-        $prices->each(function ($price) use ($exchange) {
-
+        $symbols = [];
+        $prices->each(function ($price) use ($exchange, &$symbols) {
             $symbol = Symbol::where('name', $price['symbol'])->first();
-            if ($symbol) {
-
+            if ($symbol && $symbol->exchanges->contains($exchange)) {
+                $symbols[] = $symbol->id;
                 // update or create price
                 SymbolPrice::updateOrCreate([
                     'symbol_id' => $symbol->id,
@@ -87,20 +82,26 @@ class UpdatePrices extends Command
             }
 
         });
+
+        // delete all prices that are not in the list
+        SymbolPrice::where('exchange_id', $exchange->id)
+            ->whereNotIn('symbol_id', $symbols)
+            ->delete();
 
     }
 
     private function bybit()
     {
-
         $api = new \App\Services\BybitApi();
         $exchange = Exchange::where('slug', 'bybit')->firstOrFail();
         $prices = $api->get_prices();
 
-        $prices->each(function ($price) use ($exchange) {
+        $symbols = [];
+        $prices->each(function ($price) use ($exchange, &$symbols) {
             $symbol = Symbol::where('name', $price['symbol'])->first();
 
-            if ($symbol) {
+            if ($symbol && $symbol->exchanges->contains($exchange)) {
+                $symbols[] = $symbol->id;
                 // update or create price
                 SymbolPrice::updateOrCreate([
                     'symbol_id' => $symbol->id,
@@ -114,20 +115,25 @@ class UpdatePrices extends Command
 
         });
 
+        // delete all prices that are not in the list
+        SymbolPrice::where('exchange_id', $exchange->id)
+            ->whereNotIn('symbol_id', $symbols)
+            ->delete();
+
     }
 
     private function whitebit()
     {
-        $start = microtime(true);
-
         $api = new \App\Services\WhitebitApi();
         $exchange = Exchange::where('slug', 'whitebit')->firstOrFail();
         $prices = $api->get_prices();
 
-        $prices->each(function ($price, $key) use ($exchange) {
+        $symbols = [];
+        $prices->each(function ($price, $key) use ($exchange, &$symbols) {
             $symbol = Symbol::where('name', str_replace('_', '', $key))->first();
 
-            if ($symbol) {
+            if ($symbol && $symbol->exchanges->contains($exchange)) {
+                $symbols[] = $symbol->id;
                 // update or create price
                 SymbolPrice::updateOrCreate([
                     'symbol_id' => $symbol->id,
@@ -141,11 +147,9 @@ class UpdatePrices extends Command
 
         });
 
-        // end timer
-        $end = microtime(true);
-        $time = $end - $start;
-
-        // info time in seconds
-        $this->info('Time: ' . $time . ' seconds');
+        // delete all prices that are not in the list
+        SymbolPrice::where('exchange_id', $exchange->id)
+            ->whereNotIn('symbol_id', $symbols)
+            ->delete();
     }
 }
