@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
 
 Route::get('/symbol/{symbol}', [\App\Http\Controllers\SymbolController::class, 'info'])->name('symbol.info');
 

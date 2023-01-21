@@ -7,7 +7,8 @@ use Livewire\Component;
 
 class SymbolTable extends Component
 {
-    public $symbol=null;
+    public $symbol = null;
+    public int $capital = 1000;
 
     public function mount(Symbol $symbol)
     {
