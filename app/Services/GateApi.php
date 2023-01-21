@@ -18,4 +18,9 @@ class GateApi
         return collect($response->json() ?? []);
     }
 
+    function get_currencies()
+    {
+        $response = \Http::withoutVerifying()->get($this->base_url . '/spot/currencies');
+        return collect($response->json() ?? []);
+    }
 }
