@@ -25,7 +25,8 @@ class ExchangeRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'slug' => 'required'
+            'slug' => 'required',
+            'trade_link' => 'required',
         ];
     }
 }

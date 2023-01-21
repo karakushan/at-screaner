@@ -5,12 +5,18 @@
             <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
                 <form action="" class="grid grid-cols-8 gap-2">
                     <div class="mb-6">
-                        <label for="min_spread" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('Минимальный спред %') }}</label>
-                        <input type="number" wire:model="min_spread" id="min_spread" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                        <label for="min_spread"
+                               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('Минимальный спред %') }}</label>
+                        <input type="number" wire:model="min_spread" id="min_spread"
+                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                               required>
                     </div>
                     <div class="mb-6">
-                        <label for="max_spread" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('Максимальный спред %') }}</label>
-                        <input type="number" wire:model="max_spread" id="min_spread" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                        <label for="max_spread"
+                               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('Максимальный спред %') }}</label>
+                        <input type="number" wire:model="max_spread" id="min_spread"
+                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                               required>
                     </div>
                     <div class="mb-6">
                         <label for="quote_asset"
@@ -24,8 +30,11 @@
                             @endforeach
                         </select></div>
                     <div class="mb-6">
-                        <label for="capital" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('Стартовый капитал') }}</label>
-                        <input type="number" wire:model="capital" id="capital" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name@flowbite.com" required>
+                        <label for="capital"
+                               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('Стартовый капитал') }}</label>
+                        <input type="number" wire:model="capital" id="capital"
+                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                               placeholder="name@flowbite.com" required>
                     </div>
                 </form>
                 <div class="overflow-hidden">
@@ -47,6 +56,7 @@
                             <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
                                 {{ __('Прибыль') }}
                             </th>
+                            <th></th>
                         </tr>
                         </thead>
                         <tbody wire:poll.5s>
@@ -57,18 +67,10 @@
                                 <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                                     <ul>
                                         @foreach ($symbol->prices as $price)
-                                                <?php
-                                                $links = [
-                                                    'binance' => 'https://www.binance.com/en/trade/%s_%s?theme=dark&type=spot',
-                                                    'bybit' => 'https://www.bybit.com/uk-UA/trade/spot/%s/%s',
-                                                    'whitebit' => 'https://whitebit.com/ua/trade/%s-%s?tab=positions&type=spot',
-                                                    'gate' => 'https://www.gate.io/trade/%s_%s',
-                                                ];
-                                                ?>
                                             <li class="flex">
                                                     <span
                                                         class="text-sm font-medium text-gray-900">{{ $price->exchange_name }} - {{ $price->price_formatted }}</span>
-                                                <a href="{{ sprintf($links[$price->exchange->slug], $symbol->base_currency, $symbol->quote_currency) }}"
+                                                <a href="{{ $price->exchange->getTradeUrl($symbol->base_currency, $symbol->quote_currency)  }}"
                                                    target="_blank" class="w-4 flex ml-2">
                                                     <svg fill="none" stroke="currentColor" stroke-width="1.5"
                                                          viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
@@ -87,7 +89,12 @@
                                     <span class="text-sm font-medium text-gray-900">{{ $symbol->spread }}%</span>
                                 </td>
                                 <td>
-                                    <span class="text-sm font-medium text-gray-900">{{ $symbol->spread * $capital / 100 }}</span>
+                                    <span
+                                        class="text-sm font-medium text-gray-900">{{ $symbol->spread * $capital / 100 }}</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <a href="{{ route('symbol.info', $symbol) }}"
+                                       class="text-indigo-600 hover:text-indigo-900">{{ __('View') }}</a>
                                 </td>
                             </tr>
                         @endforeach

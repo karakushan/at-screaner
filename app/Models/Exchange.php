@@ -9,10 +9,17 @@ class Exchange extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name','slug'];
+    protected $fillable = ['name', 'slug', 'trade_link'];
+
 
     public function symbols()
     {
         return $this->belongsToMany(Symbol::class, 'exchange_symbols');
     }
+
+    public function getTradeUrl($base, $quote)
+    {
+        return str_replace(['{base}', '{quote}'], [$base, $quote], $this->trade_link);
+    }
+
 }

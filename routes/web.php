@@ -18,6 +18,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/symbol/{symbol}', [\App\Http\Controllers\SymbolController::class, 'info'])->name('symbol.info');
+
 Route::group(['prefix' => 'dashboard', 'middleware' => ['auth', 'verified']], function () {
     Route::get('/', [\App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
     Route::resource('exchanges', \App\Http\Controllers\ExchangeController::class);
