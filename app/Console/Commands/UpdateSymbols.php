@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Symbol;
 use App\Services\BinanceApi;
 use App\Services\BybitApi;
+use App\Services\GateApi;
 use App\Services\WhitebitApi;
 use Illuminate\Console\Command;
 use \App\Models\Exchange;
@@ -133,6 +134,36 @@ class UpdateSymbols extends Command
                 'name' => $symbol['stock'] . $symbol['money'],
                 'base_currency' => $symbol['stock'],
                 'quote_currency' => $symbol['money'],
+            ]);
+
+            $attach[] = $sym->id;
+        });
+
+        $exchange->symbols()->sync($attach);
+    }
+
+    private function gate()
+    {
+        $exchange = Exchange::where('slug', 'gate')->firstOrFail();
+
+        $api = new GateApi();
+        $symbols = $api->get_symbols();
+
+        $symbols = $symbols->filter(function ($value, $key) {
+            return $value['trade_status'] == 'tradable';
+        });
+
+        $attach = [];
+        $symbols->each(function ($symbol) use (&$attach) {
+            $name = implode('', [$symbol['base'], $symbol['quote']]);
+            $sym = Symbol::updateOrCreate([
+                'name' => $name,
+                'base_currency' => $symbol['base'],
+                'quote_currency' => $symbol['quote'],
+            ], [
+                'name' => $name,
+                'base_currency' => $symbol['base'],
+                'quote_currency' => $symbol['quote'],
             ]);
 
             $attach[] = $sym->id;

@@ -152,4 +152,34 @@ class UpdatePrices extends Command
             ->whereNotIn('symbol_id', $symbols)
             ->delete();
     }
+
+    private function gate(){
+        $api = new \App\Services\GateApi();
+        $exchange = Exchange::where('slug', 'gate')->firstOrFail();
+        $prices = $api->get_prices();
+
+        $symbols = [];
+        $prices->each(function ($price, $key) use ($exchange, &$symbols) {
+            $symbol = Symbol::where('name', str_replace('_', '', $price['currency_pair']))->first();
+
+            if ($symbol && $symbol->exchanges->contains($exchange)) {
+                $symbols[] = $symbol->id;
+                // update or create price
+                SymbolPrice::updateOrCreate([
+                    'symbol_id' => $symbol->id,
+                    'exchange_id' => $exchange->id,
+                ], [
+                    'symbol_id' => $symbol->id,
+                    'exchange_id' => $exchange->id,
+                    'price' => floatval($price['last']),
+                ]);
+            }
+
+        });
+
+        // delete all prices that are not in the list
+        SymbolPrice::where('exchange_id', $exchange->id)
+            ->whereNotIn('symbol_id', $symbols)
+            ->delete();
+    }
 }
