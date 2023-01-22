@@ -14,10 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
-
+Route::get('/', [\App\Http\Controllers\PageController::class, 'home'])->name('home');
 Route::get('/symbol/{symbol}', [\App\Http\Controllers\SymbolController::class, 'info'])->name('symbol.info');
 
 Route::group(['prefix' => 'dashboard', 'middleware' => ['auth', 'verified']], function () {

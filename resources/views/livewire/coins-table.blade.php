@@ -1,40 +1,38 @@
 <div>
-
     <div class="flex flex-col">
         <div class="overflow-x-auto sm:mx-0.5 lg:mx-0.5">
             <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
-                <form action="" class="grid grid-cols-8 gap-2">
+                <form action="" class="grid grid-cols-6 gap-2 mt-6">
                     <div class="mb-6">
                         <label for="min_spread"
-                               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('Минимальный спред %') }}</label>
+                               class="block mb-2 text-sm font-medium text-gray-900 whitespace-nowrap">{{ __('Минимальный спред %') }}</label>
                         <input type="number" wire:model="min_spread" id="min_spread"
-                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                               required>
+                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                     </div>
                     <div class="mb-6">
                         <label for="max_spread"
-                               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('Максимальный спред %') }}</label>
+                               class="block mb-2 text-sm font-medium text-gray-900 whitespace-nowrap">{{ __('Максимальный спред %') }}</label>
                         <input type="number" wire:model="max_spread" id="min_spread"
-                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                required>
                     </div>
                     <div class="mb-6">
                         <label for="quote_asset"
-                               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('Quote Asset') }}</label>
+                               class="block mb-2 text-sm font-medium text-gray-900 whitespace-nowrap">{{ __('Quote Asset') }}</label>
                         <select id="quote_asset"
                                 wire:model="quote_asset"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                             <option selected>{{ __('Select') }}</option>
                             @foreach($quote_assets as $quote_asset)
                                 <option value="{{ $quote_asset }}">{{ $quote_asset }}</option>
                             @endforeach
-                        </select></div>
+                        </select>
+                    </div>
                     <div class="mb-6">
                         <label for="capital"
-                               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('Стартовый капитал') }}</label>
+                               class="block mb-2 text-sm font-medium text-gray-900 whitespace-nowrap">{{ __('Стартовый капитал') }}</label>
                         <input type="number" wire:model="capital" id="capital"
-                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                               placeholder="name@flowbite.com" required>
+                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                     </div>
                 </form>
                 <div class="overflow-hidden">
