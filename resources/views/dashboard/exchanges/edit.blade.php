@@ -16,7 +16,8 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
-                <form class="p-4" action="{{ route('exchanges.update',$exchange->id) }}" method="post">
+                <form class="p-4" action="{{ route('exchanges.update',$exchange->id) }}" method="post"
+                      enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <div class="grid gap-6 mb-6">
@@ -33,6 +34,33 @@
                             @enderror
                         </div>
                     </div>
+
+                    <div class="flex flex-wrap w-full mb-6">
+                        <label for="logo"
+                               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white w-full">{{ __("Logo") }}</label>
+                        <figure class="basis-1/6 border p-2 mr-4">
+                            @if($exchange->logo_url && \Storage::disk('public')->exists($exchange->logo_url))
+                                <img class="h-auto w-full mx-auto" src="{{ asset('storage/'.$exchange->logo_url) }}"
+                                     alt="{{ $exchange->name }}">
+                            @else
+                                <img class="h-auto w-full mx-auto" src="{{ asset('img/no-image.png') }}"
+                                     alt="{{ __('No image') }}">
+                            @endif
+                        </figure>
+
+                        <div class="basis-auto">
+
+                            <input type="file" id="logo"
+                                   name="logo"
+                                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full"
+                                   placeholder="">
+                            @error('logo')
+                            <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+
+
                     <div class="grid gap-6 mb-6">
                         <div>
                             <label for="slug"

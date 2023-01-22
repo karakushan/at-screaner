@@ -77,7 +77,19 @@
                                     {{ $exchange->id }}
                                 </th>
                                 <td class="px-6 py-4">
-                                    {{ $exchange->name }}
+                                    <div class="flex items-center">
+                                        @if($exchange->logo_url)
+                                            <img class="w-6 h-6 rounded-full mr-3"
+                                                 src="{{ asset(Storage::url($exchange->logo_url)) }}" alt="Rounded avatar">
+                                        @else
+                                            <img class="w-6 h-6 rounded-full mr-3"
+                                                 src="https://ui-avatars.com/api/?name={{ $exchange->name }}"
+                                                 alt="No Logo">
+                                        @endif
+
+                                    <span class="font-medium">{{ $exchange->name }}</span>
+                                    </div>
+
                                 </td>
                                 <td class="px-6 py-4">
                                     {{ $exchange->slug  }}

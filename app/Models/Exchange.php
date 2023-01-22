@@ -9,7 +9,7 @@ class Exchange extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'slug', 'trade_link'];
+    protected $fillable = ['name', 'slug', 'trade_link', 'logo_url'];
 
 
     public function symbols()
@@ -22,4 +22,10 @@ class Exchange extends Model
         return str_replace(['{base}', '{quote}'], [$base, $quote], $this->trade_link);
     }
 
+    function deleteLogo()
+    {
+        if ($this->logo_url && \Storage::disk('public')->exists($this->logo_url)) {
+            \Storage::disk('public')->delete($this->logo_url);
+        }
+    }
 }

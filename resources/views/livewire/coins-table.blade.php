@@ -39,21 +39,22 @@
                     <table class="min-w-full">
                         <thead class="bg-gray-200 border-b">
                         <tr>
-                            <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                            <th scope="col" width="20" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
                                 {{ __("ID") }}
                             </th>
                             <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                {{ __("Символ") }}
+                                {{ __("Pair") }}
                             </th>
                             <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                {{ __('Ціни') }}
+                                {{ __('Profit') }}
                             </th>
                             <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                {{ __('Спред') }}
+                                {{ __('Prices') }}
                             </th>
                             <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                {{ __('Прибыль') }}
+                                {{ __('Spread %') }}
                             </th>
+
                             <th></th>
                         </tr>
                         </thead>
@@ -63,9 +64,21 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $symbol->id }} </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $symbol->base_currency }}/{{ $symbol->quote_currency }} </td>
                                 <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                    <ul>
+                                    <span
+                                        class="text-sm font-medium text-gray-900 border px-2 py-2 bg-blue-300 rounded-lg border-blue-400 shadow">{{ number_format($symbol->spread * $capital / 100,1,'.',' ') }}</span>
+                                </td>
+                                <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                    <ul class="grid gap-2">
                                         @foreach ($symbol->prices as $price)
                                             <li class="flex">
+                                                @if($price->exchange->logo_url)
+                                                    <img class="w-5 h-5 rounded-full mr-3"
+                                                         src="{{ asset(Storage::url($price->exchange->logo_url)) }}" alt="Rounded avatar">
+                                                @else
+                                                    <img class="w-5 h-5 rounded-full mr-3"
+                                                         src="https://ui-avatars.com/api/?name={{ $price->exchange->name }}"
+                                                         alt="No Logo">
+                                                @endif
                                                     <span
                                                         class="text-sm font-medium text-gray-900">{{ $price->exchange_name }} - {{ $price->price_formatted }}</span>
                                                 <a href="{{ $price->exchange->getTradeUrl($symbol->base_currency, $symbol->quote_currency)  }}"
@@ -86,13 +99,10 @@
                                 <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                                     <span class="text-sm font-medium text-gray-900">{{ $symbol->spread }}%</span>
                                 </td>
-                                <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                    <span
-                                        class="text-sm font-medium text-gray-900">{{ $symbol->spread * $capital / 100 }}</span>
-                                </td>
+
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <a href="{{ route('symbol.info', $symbol) }}"
-                                       class="text-indigo-600 hover:text-indigo-900">{{ __('View') }}</a>
+                                       class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 lg:px-4 py-2 lg:py-2 mr-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">{{ __('More...') }}</a>
                                 </td>
                             </tr>
                         @endforeach

@@ -77,7 +77,16 @@ class ExchangeController extends Controller
      */
     public function update(ExchangeRequest $request, $id)
     {
-        Exchange::findOrFail($id)->update($request->all());
+        $exchange = Exchange::findOrFail($id);
+
+        if ($request->hasFile('logo')) {
+            $exchange->deleteLogo();
+            $request->merge([
+                'logo_url' => $request->file('logo')->store('exchanges', 'public')
+            ]);
+        }
+
+        $exchange->update($request->all());
 
         return redirect()->route('exchanges.index')
             ->with('success', __('Exchange updated successfully.'));
