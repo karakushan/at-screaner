@@ -6,17 +6,17 @@
                     <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">{{ __('Символ :base/:quote',['base'=>$symbol->base_currency,'quote'=>$symbol->quote_currency])  }}</h1>
                     <a href="{{ route('home') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">{{ __('Go to home') }}</a>
                 </div>
-                <form action="" class="grid grid-cols-6 gap-2">
+                <form action="" class="grid grid-cols-4 gap-2">
                     <div class="mb-6">
                         <label for="capital"
                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('Стартовый капитал') }}</label>
                         <div class="flex items-center">
                             <input type="number" wire:model="capital" id="capital"
-                                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                   placeholder="name@flowbite.com" required>
+                                   class="w-24 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                   placeholder="0" min="0" step="1">
                             <div class="ml-3 whitespace-nowrap font-medium">
                                 @if($symbol)
-                                    {{ __("Profit") }}: {{ $symbol->spread * $capital / 100 }}
+                                    {{ __("Profit") }}: {{ $symbol->spread * $capital / 100 }} ({{ $symbol->spread }}%)
                                 @endif
                             </div>
                         </div>

@@ -8,6 +8,9 @@ class BlogController extends Controller
 {
     public function main()
     {
-        return view('blog.main');
+        $title = 'Blog';
+        $description = 'Blog description';
+
+        return view('blog.main', compact('title', 'description'));
     }
 }
