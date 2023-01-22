@@ -16,6 +16,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [\App\Http\Controllers\PageController::class, 'home'])->name('home');
 Route::get('/symbol/{symbol}', [\App\Http\Controllers\SymbolController::class, 'info'])->name('symbol.info');
+Route::get('/blog', [\App\Http\Controllers\BlogController::class, 'main'])->name('blog');
+Route::get('/page/{slug}', [\App\Http\Controllers\PageController::class, 'page'])->name('page');
+
 
 Route::group(['prefix' => 'dashboard', 'middleware' => ['auth', 'verified']], function () {
     Route::get('/', [\App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');

@@ -41,7 +41,7 @@ return [
     |
     */
 
-    'debug' => (bool) env('APP_DEBUG', false),
+    'debug' => (bool)env('APP_DEBUG', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -211,5 +211,41 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         'Debugbar' => Barryvdh\Debugbar\Facades\Debugbar::class,
     ])->toArray(),
+
+    'main_nav' => [
+        'home' => [
+            'title' => 'Home',
+            'route' => 'home',
+        ],
+        'arbitrage' => [
+            'title' => 'Arbitrage',
+            'route' => 'arbitrage'
+        ],
+        'blog' => [
+            'title' => 'Blog',
+            'route' => 'blog',
+        ],
+        'how-it-work' => [
+            'title' => 'How it works',
+            'route' => 'page',
+            'params' => [
+                'slug' => 'how-it-works'
+            ]
+        ],
+        'faq' => [
+            'title' => 'FAQ',
+            'route' => 'page',
+            'params' => [
+                'slug' => 'faq'
+            ]
+        ],
+        'contact' => [
+            'title' => 'Contact',
+            'route' => 'page',
+            'params' => [
+                'slug' => 'contact'
+            ]
+        ],
+    ],
 
 ];
