@@ -84,7 +84,7 @@ class UpdateCurrencies extends Command
         $bar->finish();
 
         // delete currencies that are not in gate
-        \App\Models\Currency::where('exchange_id', $gate->id)->whereNotIn('id', $ids)->delete();
+//        \App\Models\Currency::where('exchange_id', $gate->id)->whereNotIn('id', $ids)->delete();
 
     }
 

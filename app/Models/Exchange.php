@@ -48,12 +48,12 @@ class Exchange extends Model
         if (!$currency) return '';
 
         $chunks = [
-            '<span title="chain" class="text-yellow-400">'.$currency->chain.'</span>',
-            '<span title="withdraw" class="' . ($currency->withdraw_disabled ? 'text-red-500' : 'text-blue-500') . '">W</span>',
-            '<span title="deposit" class="' . ($currency->deposit_disabled ? 'text-red-500' : 'text-blue-500') . '">D</span>'
+            '<span title="chain">'.$currency->chain.'</span>',
+            '<span title="withdraw" class="' . ($currency->withdraw_disabled ? 'text-red-500' : 'text-green-600') . '">W</span>',
+            '<span title="deposit" class="' . ($currency->deposit_disabled ? 'text-red-500' : 'text-green-600') . '">D</span>'
         ];
 
-        return '(' . implode($separator, $chunks) . ')';
+        return '<span class="text-gray-500 opacity-80 font-semibold">(' . implode($separator, $chunks) . ')</span>';
     }
 
 }
