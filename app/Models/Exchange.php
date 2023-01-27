@@ -28,4 +28,32 @@ class Exchange extends Model
             \Storage::disk('public')->delete($this->logo_url);
         }
     }
+
+    // currencies
+    public function currencies()
+    {
+        return $this->hasMany(Currency::class);
+    }
+
+    // exchange currency
+    public function getCurrency($name)
+    {
+        return $this->currencies()->where('name', $name)->first();
+    }
+
+    // display currency info
+    public function displayCurrency($name, $separator = ':')
+    {
+        $currency = $this->getCurrency($name);
+        if (!$currency) return '';
+
+        $chunks = [
+            '<span title="chain" class="text-yellow-400">'.$currency->chain.'</span>',
+            '<span title="withdraw" class="' . ($currency->withdraw_disabled ? 'text-red-500' : 'text-blue-500') . '">W</span>',
+            '<span title="deposit" class="' . ($currency->deposit_disabled ? 'text-red-500' : 'text-blue-500') . '">D</span>'
+        ];
+
+        return '(' . implode($separator, $chunks) . ')';
+    }
+
 }

@@ -20,6 +20,8 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('exchange:update_symbols binance')->everyFourHours();
         $schedule->command('exchange:update_symbols bybit')->everyFourHours();
+        $schedule->command('update-currencies all')->everyTenMinutes(); // update currencies status (delisted, withdraw_disabled ...)
+
 
         $seconds = 5;
         $schedule->call(function () use ($seconds) {

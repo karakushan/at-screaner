@@ -62,7 +62,8 @@
                         @foreach ($symbols as $name=>$symbol)
                             <tr class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $symbol->id }} </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $symbol->base_currency }}/{{ $symbol->quote_currency }} </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $symbol->base_currency }}
+                                    /{{ $symbol->quote_currency }} </td>
                                 <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                                     <span
                                         class="text-sm font-medium text-gray-900 border px-2 py-2 bg-blue-300 rounded-lg border-blue-400 shadow">{{ number_format($symbol->spread * $capital / 100,1,'.',' ') }}</span>
@@ -70,26 +71,27 @@
                                 <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                                     <ul class="grid gap-2">
                                         @foreach ($symbol->prices as $price)
-                                            <li class="flex">
+                                            <li class="flex items-center">
+
                                                 @if($price->exchange->logo_url)
                                                     <img class="w-5 h-5 rounded-full mr-3"
-                                                         src="{{ asset(Storage::url($price->exchange->logo_url)) }}" alt="Rounded avatar">
+                                                         src="{{ asset(Storage::url($price->exchange->logo_url)) }}"
+                                                         alt="Rounded avatar">
                                                 @else
                                                     <img class="w-5 h-5 rounded-full mr-3"
                                                          src="https://ui-avatars.com/api/?name={{ $price->exchange->name }}"
                                                          alt="No Logo">
                                                 @endif
-                                                    <span
-                                                        class="text-sm font-medium text-gray-900">{{ $price->exchange_name }} - {{ $price->price_formatted }}</span>
-                                                <a href="{{ $price->exchange->getTradeUrl($symbol->base_currency, $symbol->quote_currency)  }}"
-                                                   target="_blank" class="w-4 flex ml-2">
-                                                    <svg fill="none" stroke="currentColor" stroke-width="1.5"
-                                                         viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
-                                                         aria-hidden="true">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                              d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"></path>
-                                                    </svg>
-                                                </a>
+
+                                                <span
+                                                    class="text-sm font-medium text-gray-900">
+                                                        <a href="{{ $price->exchange->getTradeUrl($symbol->base_currency, $symbol->quote_currency)  }}"
+                                                           target="_blank"
+                                                           class="hover:text-primary-700">{{ $price->exchange_name }}  </a> - {{ $price->price_formatted }}
+
+                                                    {!! $price->exchange->displayCurrency($symbol->base_currency) !!}
+                                                    </span>
+
 
                                             </li>
                                         @endforeach

@@ -41,4 +41,5 @@ class SymbolPrice extends Model
     {
         return sprintf("%.8f", $this->price);
     }
+
 }

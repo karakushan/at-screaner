@@ -39,11 +39,11 @@ class Symbol extends Model
         }
         $prices = $this->prices->pluck('price')->toArray();
 
-        if(min($prices) == 0) {
+        if (min($prices) == 0) {
             return 0;
         }
 
-        $spread=(max($prices) - min($prices)) / min($prices) * 100;
+        $spread = (max($prices) - min($prices)) / min($prices) * 100;
 
 
         return round($spread, 2);
