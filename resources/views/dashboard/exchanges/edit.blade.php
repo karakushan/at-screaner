@@ -69,7 +69,7 @@
                                    name="slug"
                                    value="{{ $exchange->slug }}"
                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                   placeholder="">
+                                   placeholder="" {{$exchange->slug ? 'readonly' : ''}}>
                             @error('slug')
                             <p class="text-red-500 text-xs italic">{{ $message }}</p>
                             @enderror
@@ -85,6 +85,34 @@
                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                    placeholder="">
                             @error('trade_link')
+                            <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="grid gap-6 mb-6">
+                        <div>
+                            <label for="withdraw_url"
+                                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __("Ссылка на страницу вывода валюты") }}</label>
+                            <input type="text" id="withdraw_url"
+                                   name="withdraw_url"
+                                   value="{{$exchange->withdraw_url}}"
+                                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                   placeholder="">
+                            @error('withdraw_url')
+                            <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="grid gap-6 mb-6">
+                        <div>
+                            <label for="trade_link"
+                                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __("Ссылка на страницу ввода валюты") }}</label>
+                            <input type="text" id="deposit_url"
+                                   name="deposit_url"
+                                   value="{{$exchange->deposit_url}}"
+                                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                   placeholder="">
+                            @error('deposit_url')
                             <p class="text-red-500 text-xs italic">{{ $message }}</p>
                             @enderror
                         </div>

@@ -62,8 +62,7 @@
                         @foreach ($symbols as $name=>$symbol)
                             <tr class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $symbol->id }} </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $symbol->base_currency }}
-                                    /{{ $symbol->quote_currency }} </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $symbol->base_currency }}/{{ $symbol->quote_currency }} </td>
                                 <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                                     <span
                                         class="text-sm font-medium text-gray-900 border px-2 py-2 bg-blue-300 rounded-lg border-blue-400 shadow">{{ number_format($symbol->spread * $capital / 100,1,'.',' ') }}</span>

@@ -27,7 +27,7 @@ class ExchangeRequest extends FormRequest
             'name' => 'required',
             'slug' => 'required',
             'trade_link' => 'required',
-            'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
         ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\GateApi;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,7 +10,14 @@ class Exchange extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'slug', 'trade_link', 'logo_url'];
+    protected $fillable = [
+        'name',
+        'slug',
+        'trade_link',
+        'logo_url',
+        'withdraw_url',
+        'deposit_url'
+    ];
 
 
     public function symbols()
@@ -48,9 +56,9 @@ class Exchange extends Model
         if (!$currency) return '';
 
         $chunks = [
-            '<span title="chain">'.$currency->chain.'</span>',
-            '<span title="withdraw" class="' . ($currency->withdraw_disabled ? 'text-red-500' : 'text-green-600') . '">W</span>',
-            '<span title="deposit" class="' . ($currency->deposit_disabled ? 'text-red-500' : 'text-green-600') . '">D</span>'
+            '<span title="chain">' . $currency->chain . '</span>',
+            '<a href="' . str_replace('{currency}', $currency->name, $this->withdraw_url ?? '') . '" target="_blank" title="withdraw" class="' . ($currency->withdraw_disabled ? 'text-red-500' : 'text-green-600') . '">W</a>',
+            '<a href="' . str_replace('{currency}', $currency->name, $this->deposit_url ?? '') . '" target="_blank" title="deposit" class="' . ($currency->deposit_disabled ? 'text-red-500' : 'text-green-600') . '">D</a>'
         ];
 
         return '<span class="text-gray-500 opacity-80 font-semibold">(' . implode($separator, $chunks) . ')</span>';
