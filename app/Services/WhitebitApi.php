@@ -57,4 +57,12 @@ class WhitebitApi
         return collect($data ?? []);
     }
 
+    // get currencies
+    public function get_currencies(): Collection
+    {
+        $endpoint = '/api/v4/public/assets';
+        $data = $this->get($endpoint);
+        return collect($data ?? []);
+    }
+
 }

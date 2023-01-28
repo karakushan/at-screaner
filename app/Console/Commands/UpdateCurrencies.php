@@ -63,12 +63,14 @@ class UpdateCurrencies extends Command
         // make progress bar
         $bar = $this->output->createProgressBar(count($currencies));
         $bar->start();
-        foreach ($currencies as $currency) {
+        foreach ($currencies as $key => $currency) {
             $bar->advance();
             $curr = \App\Models\Currency::updateOrCreate(
-                ['name' => $currency['currency']],
                 [
-                    'exchange_id' => $gate->id,
+                    'name' => $currency['currency'],
+                    'exchange_id' => $gate->id],
+                [
+
                     'chain' => $currency['chain'] ?? null,
                     'delisted' => $currency['delisted'],
                     'withdraw_disabled' => $currency['withdraw_disabled'],
@@ -78,8 +80,6 @@ class UpdateCurrencies extends Command
             );
 
             $ids[] = $curr->id;
-
-
         }
         $bar->finish();
 
@@ -88,5 +88,35 @@ class UpdateCurrencies extends Command
 
     }
 
+    private function whitebit()
+    {
+        $api = new \App\Services\WhitebitApi();
+        $currencies = $api->get_currencies();
+        $exchange = \App\Models\Exchange::where('slug', 'whitebit')->first();
+        $ids = [];
+        // make progress bar
+        $bar = $this->output->createProgressBar(count($currencies));
+        $bar->start();
+        foreach ($currencies as $key => $currency) {
+            $bar->advance();
+            $curr = \App\Models\Currency::updateOrCreate(
+                [
+                    'name' => $key,
+                    'exchange_id' => $exchange->id
+                ],
+                [
+                    'chain' => $currency['networks']['default'] ?? null,
+                    'delisted' => false,
+                    'withdraw_disabled' => !$currency['can_withdraw'],
+                    'deposit_disabled' => !$currency['can_deposit'],
+                    'trade_disabled' => false,
+                    'description' => $currency['name'],
+                ]
+            );
+
+            $ids[] = $curr->id;
+        }
+        $bar->finish();
+    }
 
 }
