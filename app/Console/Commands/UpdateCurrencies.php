@@ -92,6 +92,9 @@ class UpdateCurrencies extends Command
     {
         $api = new \App\Services\WhitebitApi();
         $currencies = $api->get_currencies();
+        $api->saveToJson($currencies["1INCH"],'whitebit_currencies');
+        exit;
+
         $exchange = \App\Models\Exchange::where('slug', 'whitebit')->first();
         $ids = [];
         // make progress bar
@@ -113,6 +116,55 @@ class UpdateCurrencies extends Command
                     'description' => $currency['name'],
                 ]
             );
+
+            $ids[] = $curr->id;
+        }
+        $bar->finish();
+    }
+
+    function bybit()
+    {
+        $api = new \App\Services\BybitApi();
+        $currencies = $api->get_currencies();
+
+        $exchange = \App\Models\Exchange::where('slug', 'bybit')->first();
+        $ids = [];
+        // make progress bar
+        $bar = $this->output->createProgressBar(count($currencies));
+        $bar->start();
+        foreach ($currencies as $key => $currency) {
+            $bar->advance();
+
+            $curr = \App\Models\Currency::updateOrCreate(
+                [
+                    'name' => $key,
+                    'exchange_id' => $exchange->id
+                ],
+                [
+                    'name' => $key,
+                    'exchange_id' => $exchange->id
+                ]
+            );
+
+            if ($currency['chains']) {
+                foreach ($currency['chains'] as $chain) {
+                    $curr->chains()->updateOrCreate(
+                        [
+                            'currency_id' => $curr->id,
+                            'name' => $chain['chain'],
+                            'exchange_id' => $exchange->id
+                        ],
+                        [
+                            'type' => $chain['chainType'],
+                            'can_withdraw' => $chain['chainWithdraw'] === "1",
+                            'can_deposit' => $chain['chainDeposit'] === "1",
+                            'withdraw_fee' => (float)$chain['withdrawFee'],
+                            'withdraw_min' => (float)$chain['withdrawMin'],
+                            'deposit_min' => (float)$chain['depositMin'],
+                        ]
+                    );
+                }
+            }
 
             $ids[] = $curr->id;
         }

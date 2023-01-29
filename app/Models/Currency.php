@@ -26,4 +26,9 @@ class Currency extends Model
     {
         return $this->belongsTo(Exchange::class);
     }
+
+    public function chains()
+    {
+        return $this->hasMany(CurrencyChain::class);
+    }
 }

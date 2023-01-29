@@ -3,12 +3,16 @@
 namespace App\Services;
 
 use Illuminate\Support\Collection;
+use App\Services\Traits\ExchangeUtilities;
+
 
 class WhitebitApi
 {
     private string $base_url = '';
     private string $api_key = '';
     private string $api_secret = '';
+
+    use ExchangeUtilities;
 
     public function __construct()
     {
