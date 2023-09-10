@@ -5,10 +5,11 @@ namespace App\Models;
 use App\Services\GateApi;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Orchid\Screen\AsSource;
 
 class Exchange extends Model
 {
-    use HasFactory;
+    use HasFactory, AsSource;
 
     protected $fillable = [
         'name',

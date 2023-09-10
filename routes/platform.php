@@ -96,4 +96,9 @@ Route::screen('example-editors', ExampleTextEditorsScreen::class)->name('platfor
 Route::screen('example-cards', ExampleCardsScreen::class)->name('platform.example.cards');
 Route::screen('example-advanced', ExampleFieldsAdvancedScreen::class)->name('platform.example.advanced');
 
+
+Route::screen('exchanges', \App\Orchid\Screens\Exchanges\ExchangesListScreen::class)->name('platform.exchanges.index');
+Route::screen('exchange/edit/{exchange}', \App\Orchid\Screens\Exchanges\ExchangeEditScreen::class)->name('platform.exchange.edit');
+Route::screen('exchange/create', \App\Orchid\Screens\Exchanges\ExchangeEditScreen::class)->name('platform.exchange.create');
+
 //Route::screen('idea', Idea::class, 'platform.screens.idea');
