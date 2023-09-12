@@ -21,6 +21,7 @@
                                class="block mb-2 text-sm font-medium text-gray-900 whitespace-nowrap">{{ __('Quote Asset') }}</label>
                         <select id="quote_asset"
                                 wire:model="quote_asset"
+                                wire:ignore
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                             <option selected>{{ __('Select') }}</option>
                             @foreach($quote_assets as $quote_asset)
@@ -59,17 +60,17 @@
                         </tr>
                         </thead>
                         <tbody wire:poll.5s>
-                        @foreach ($symbols as $name=>$symbol)
+                        @foreach ($symbols as $name=>$pair)
                             <tr class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $symbol->id }} </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $symbol->base_currency }}/{{ $symbol->quote_currency }} </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $pair->symbol->id }} </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $pair->symbol->base_currency }}/{{ $pair->symbol->quote_currency }} </td>
                                 <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                                     <span
-                                        class="text-sm font-medium text-gray-900 border px-2 py-2 bg-blue-300 rounded-lg border-blue-400 shadow">{{ number_format($symbol->spread * $capital / 100,1,'.',' ') }}</span>
+                                        class="text-sm font-medium text-gray-900 border px-2 py-2 bg-blue-300 rounded-lg border-blue-400 shadow">{{ number_format($pair->price_diff * $capital / 100,1,'.',' ') }}</span>
                                 </td>
                                 <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                                     <ul class="grid gap-2">
-                                        @foreach ($symbol->prices as $price)
+                                        @foreach ($pair->prices as $price)
                                             <li class="flex items-center">
 
                                                 @if($price->exchange->logo_url)
@@ -84,11 +85,11 @@
 
                                                 <span
                                                     class="text-sm font-medium text-gray-900">
-                                                        <a href="{{ $price->exchange->getTradeUrl($symbol->base_currency, $symbol->quote_currency)  }}"
+                                                        <a href="{{ $price->exchange->getTradeUrl($pair->symbol->base_currency, $pair->symbol->quote_currency)  }}"
                                                            target="_blank"
                                                            class="hover:text-primary-700">{{ $price->exchange_name }}  </a> - {{ $price->price_formatted }}
 
-                                                    {!! $price->exchange->displayCurrency($symbol->base_currency) !!}
+                                                    {!! $price->exchange->displayCurrency($pair->symbol->base_currency) !!}
                                                     </span>
 
 
@@ -98,11 +99,11 @@
                                     </ul>
                                 </td>
                                 <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                    <span class="text-sm font-medium text-gray-900">{{ $symbol->spread }}%</span>
+                                    <span class="text-sm font-medium text-gray-900">{{ $pair->price_diff }}%</span>
                                 </td>
 
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <a href="{{ route('symbol.info', $symbol) }}"
+                                    <a href="{{ route('symbol.info', $pair->symbol) }}"
                                        class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 lg:px-4 py-2 lg:py-2 mr-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">{{ __('More...') }}</a>
                                 </td>
                             </tr>
@@ -110,6 +111,9 @@
 
                         </tbody>
                     </table>
+                   <div class="mt-6 px-6">
+                       {!! $links !!}
+                   </div>
                 </div>
             </div>
         </div>

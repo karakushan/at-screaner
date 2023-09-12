@@ -101,4 +101,8 @@ Route::screen('exchanges', \App\Orchid\Screens\Exchanges\ExchangesListScreen::cl
 Route::screen('exchange/edit/{exchange}', \App\Orchid\Screens\Exchanges\ExchangeEditScreen::class)->name('platform.exchange.edit');
 Route::screen('exchange/create', \App\Orchid\Screens\Exchanges\ExchangeEditScreen::class)->name('platform.exchange.create');
 
+Route::screen('currencies', \App\Orchid\Screens\Exchanges\CurrenciesListScreen::class)->name('platform.currencies.index');
+Route::screen('currency/create', \App\Orchid\Screens\Exchanges\CurrencyEditScreen::class)->name('platform.currency.create');
+Route::screen('currency/edit/{currency}', \App\Orchid\Screens\Exchanges\CurrencyEditScreen::class)->name('platform.currency.edit');
+
 //Route::screen('idea', Idea::class, 'platform.screens.idea');

@@ -3,15 +3,17 @@
 namespace App\Http\Livewire;
 
 use App\Models\Symbol;
-use App\Services\BinanceApi;
-
-use App\Services\BybitApi;
-use Illuminate\Support\Collection;
+use App\Models\SymbolPrice;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
-use function Psy\debug;
+use Livewire\WithPagination;
 
 class CoinsTable extends Component
 {
+    use WithPagination;
+    protected $paginationTheme = 'simple-tailwind';
+
     public $symbols = [];
     public $quote_assets = [];
     public $quote_asset = '';
@@ -27,24 +29,51 @@ class CoinsTable extends Component
     // mount
     public function mount()
     {
-        $this->symbols = Symbol::with('prices')->get();
-        $this->quote_assets = $this->symbols->pluck('quote_currency')->unique()->toArray();
+        $this->quote_assets = $this->getQuoteAssets();
+    }
+
+    // get quote assets
+    public function getQuoteAssets()
+    {
+        $quote_assets = Cache::get('quote_assets');
+        if (!$quote_assets) {
+            $quote_assets = Symbol::with('prices')->get()->pluck('quote_currency')->unique()->toArray();
+            Cache::put('quote_assets', $quote_assets);
+        }
+        return $quote_assets;
     }
 
     public function render()
     {
-        $this->symbols = Symbol::with('exchanges')
-            ->with('prices')
-            ->when($this->quote_asset, function ($query) {
-                $query->where('quote_currency', $this->quote_asset);
+        $symbols = DB::table('symbols AS s')
+            ->join('symbol_prices AS sp1', 's.id', '=', 'sp1.symbol_id')
+            ->join('symbol_prices AS sp2', function ($join) {
+                $join->on('s.id', '=', 'sp2.symbol_id')
+                    ->where('sp1.exchange_id', '<>', 'sp2.exchange_id');
             })
-            ->withCount('prices')
-            ->get()
-            ->where('prices_count', '>', 1)
-            ->where('spread', '>', $this->min_spread)
-            ->where('spread', '<', $this->max_spread)
-            ->sortByDesc('spread');
+            ->select(
+                's.name AS symbol_name',
+                's.id AS symbol_id',
+                'sp1.exchange_id AS exchange_1',
+                'sp2.exchange_id AS exchange_2',
+                'sp1.price AS exchange_1_price',
+                'sp2.price AS exchange_2_price',
+                DB::raw('((sp1.price - sp2.price) / sp1.price * 100) AS price_diff'),
+            )
+            ->orderBy('price_diff', 'DESC')
+            ->limit(20)
+            ->paginate(10);
 
-        return view('livewire.coins-table');
+        $this->symbols = collect($symbols->items())->map(function ($item) {
+            $item->symbol = Symbol::find($item->symbol_id);
+            $item->prices = SymbolPrice::query()->with('exchange')->where('symbol_id', $item->symbol_id)->get();
+            $item->price_diff = round($item->price_diff, 2);
+            return $item;
+        });
+
+        $links = $symbols->links();
+
+
+        return view('livewire.coins-table', compact('links'));
     }
 }

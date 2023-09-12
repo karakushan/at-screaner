@@ -34,6 +34,11 @@ class PlatformProvider extends OrchidServiceProvider
                 ->route('platform.exchanges.index')
                 ->title('Exchanges'),
 
+            Menu::make('Currencies')
+                ->icon('monitor')
+                ->route('platform.currencies.index'),
+
+
 
             Menu::make('Example screen')
                 ->icon('monitor')
