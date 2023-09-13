@@ -16,10 +16,6 @@ class Symbol extends Model
         'quote_currency',
     ];
 
-    protected $appends = [
-        'spread',
-    ];
-
     public function exchanges()
     {
         return $this->belongsToMany(Exchange::class, 'exchange_symbols');
@@ -29,23 +25,5 @@ class Symbol extends Model
     public function prices()
     {
         return $this->hasMany(SymbolPrice::class);
-    }
-
-    // calculate spread between prices
-    public function getSpreadAttribute(): float
-    {
-        if ($this->prices->count() < 2) {
-            return 0;
-        }
-        $prices = $this->prices->pluck('price')->toArray();
-
-        if (min($prices) == 0) {
-            return 0;
-        }
-
-        $spread = (max($prices) - min($prices)) / min($prices) * 100;
-
-
-        return round($spread, 2);
     }
 }
