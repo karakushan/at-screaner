@@ -51,6 +51,34 @@ class DB {
             );
         });
     }
+
+    createPrice(exchangeId, symbolId, price) {
+        return new Promise((resolve, reject) => {
+            this.connection.query(
+                "INSERT INTO `symbol_prices` (`exchange_id`, `symbol_id`, `price`) VALUES (?, ?, ?)", [exchangeId, symbolId, price],
+                (error, results, fields) => {
+                    if (error) {
+                        reject(error);
+                    }
+                    resolve(results);
+                }
+            );
+        });
+    }
+
+ async  findPrice(exchangeId, symbolId) {
+        return new Promise((resolve, reject) => {
+            this.connection.query(
+                "SELECT * FROM `symbol_prices` WHERE `exchange_id` = ? AND `symbol_id` = ?", [exchangeId, symbolId],
+                (error, results, fields) => {
+                    if (error) {
+                        reject(error);
+                    }
+                    resolve(results);
+                }
+            );
+        });
+    }
 }
 
 module.exports = new DB();

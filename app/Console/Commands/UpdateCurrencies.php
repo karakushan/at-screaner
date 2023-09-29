@@ -95,8 +95,6 @@ class UpdateCurrencies extends Command
     {
         $api = new WhitebitApi();
         $currencies = $api->get_currencies();
-//        $api->saveToJson($currencies["1INCH"],'whitebit_currencies');
-//        exit;
 
         $exchange = Exchange::where('slug', 'whitebit')->firstOrFail();
         $this->info('Exchange: ' . $exchange->id);
@@ -105,7 +103,6 @@ class UpdateCurrencies extends Command
         $bar->start();
         foreach ($currencies as $key => $currency) {
             $bar->advance();
-            dd($currency);
             Currency::updateOrCreate(
                 [
                     'name' => mb_strtoupper($key),
@@ -136,7 +133,6 @@ class UpdateCurrencies extends Command
         $bar->start();
         foreach ($currencies as $key => $currency) {
             $bar->advance();
-
             $curr = Currency::updateOrCreate(
                 [
                     'name' => $key,

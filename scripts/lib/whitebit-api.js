@@ -2,15 +2,17 @@ const axios = require('axios');
 
 class WhitebitApi {
     constructor() {
-
+        this.urls = {
+            tickers: 'https://whitebit.com/api/v4/public/ticker'
+        }
     }
 
     async getTickers() {
         return new Promise(async (resolve, reject) => {
                 try {
-                    const response = await axios.get('https://whitebit.com/api/v1/public/tickers');
-                    if (response.data.success && response.data.result) {
-                        resolve(response.data.result);
+                    const response = await axios.get(this.urls.tickers);
+                    if (response.data) {
+                        resolve(response.data);
                     }
                 } catch (error) {
                     reject(error);

@@ -12,6 +12,7 @@ use Livewire\WithPagination;
 class CoinsTable extends Component
 {
     use WithPagination;
+
     protected $paginationTheme = 'simple-tailwind';
 
     public $symbols = [];
@@ -61,6 +62,7 @@ class CoinsTable extends Component
                 DB::raw('((sp1.price - sp2.price) / sp1.price * 100) AS price_diff'),
             )
             ->orderBy('price_diff', 'DESC')
+//            ->whereIn('sp1.exchange_id', [9, 3, 8])
             ->limit(20)
             ->paginate(10);
 

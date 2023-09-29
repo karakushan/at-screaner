@@ -14,7 +14,7 @@ class UpdatePrices extends Command
      *
      * @var string
      */
-    protected $signature = 'exchange:update_prices {exchange}';
+    protected $signature = 'exchange:update_prices {exchange} {--interval=5}';
 
     /**
      * The console command description.
@@ -31,29 +31,23 @@ class UpdatePrices extends Command
     public function handle()
     {
         $exchange = $this->argument('exchange');
+        $interval = intval($this->option('interval'));
 
-        // update all exchanges
-        if ($exchange === 'all') {
-            $exchanges = Exchange::all();
-            foreach ($exchanges as $exchange) {
-                if (!method_exists($this, $exchange->slug)) {
-                    $this->error('Exchange "' . $exchange->slug . '" not found');
-                    continue;
+        while (true) {
+            try {
+                if (method_exists($this, $exchange)) {
+                    $start = microtime(true);
+                    $this->$exchange();
+                    $end = microtime(true);
+                    $this->info(sprintf('%s - time: %s sec.', $exchange, round($end - $start)));
+                } else {
+                    $this->error('Exchange not found');
                 }
-                $start = microtime(true);
-                $this->{$exchange->slug}();
-                $end = microtime(true);
-                $this->info(sprintf('%s - time: %s sec.', $exchange->slug, round($end - $start)));
+            } catch (\Throwable $th) {
+                $this->error($th->getMessage());
             }
-        } else {
-            if (method_exists($this, $exchange)) {
-                $start = microtime(true);
-                $this->$exchange();
-                $end = microtime(true);
-                $this->info(sprintf('%s - time: %s sec.', $exchange, round($end - $start)));
-            } else {
-                $this->error('Exchange not found');
-            }
+
+            sleep($interval);
         }
 
         return Command::SUCCESS;
@@ -153,7 +147,8 @@ class UpdatePrices extends Command
             ->delete();
     }
 
-    private function gate(){
+    private function gate()
+    {
         $api = new \App\Services\GateApi();
         $exchange = Exchange::where('slug', 'gate')->firstOrFail();
         $prices = $api->get_prices();
